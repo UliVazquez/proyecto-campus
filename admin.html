@@ -20,6 +20,7 @@
     </section>
     <section class="card">
       <h2>Usuarios</h2>
+      <p class="muted small">Aquí podés crear, ver y borrar usuarios. Los usuarios pueden ser alumnos, profesores o administradores. Para crear uno nuevo, completá los datos y presioná <b>Crear usuario</b>. Para editar, hacé clic en <b>Ver</b>. Para borrar, en <b>Borrar</b>.</p>
       <form id="createUserForm">
         <div class="row">
           <input id="u_dni" placeholder="DNI (sin espacios)" required />
@@ -47,6 +48,7 @@
     </section>
     <section class="card">
       <h2>Materias</h2>
+      <p class="muted small">En este apartado podés crear nuevas materias y ver todas las existentes. Para cada materia, asigná un profesor (DNI) y un horario. El listado muestra cuántos alumnos están inscriptos en cada materia.</p>
       <form id="createMateriaForm">
         <div class="row">
           <input id="m_id" placeholder="ID Materia (ej: M1)" required />
@@ -62,6 +64,7 @@
     </section>
     <section class="card">
       <h2>Exámenes</h2>
+      <p class="muted small">Desde aquí podés programar exámenes para las materias. Elegí la materia, la fecha y el turno, y presioná <b>Crear examen</b>. Abajo verás el listado de exámenes programados.</p>
       <form id="createExamenForm">
         <select id="e_materia"></select>
         <input id="e_fecha" type="date" />
