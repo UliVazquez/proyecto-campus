@@ -16,15 +16,17 @@
   </header>
   <main class="container">
     <section class="card">
+      <h2>Bienvenido/a</h2>
+      <div id="bienvenidaProfe">Cargando...</div>
+    </section>
+    <section class="card">
       <h2>Mis materias</h2>
       <div id="profMaterias"></div>
     </section>
-
     <section class="card">
       <h2>Gestión de estudiantes y notas</h2>
       <div id="materiaDetalle"></div>
     </section>
-
     <section class="card">
       <h2>Programar examen (para mi materia)</h2>
       <form id="crearExamenProfe">
@@ -38,12 +40,27 @@
       </form>
     </section>
   </main>
-
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-
   <script src="js/firebase-config.js" type="module"></script>
   <script src="js/db.js" type="module"></script>
   <script src="js/profesor.js" type="module"></script>
+  <script type="module">
+    const session = JSON.parse(sessionStorage.getItem('sessionUser') || 'null');
+    if (!session || session.rol !== 'profesor') {
+      window.location.href = 'index.html';
+      return;
+    }
+    document.getElementById('profeName').textContent = session.nombre;
+    document.getElementById('signOut').addEventListener('click', ()=>{
+      sessionStorage.removeItem('sessionUser');
+      window.location.href='index.html';
+    });
+    document.getElementById('bienvenidaProfe').innerHTML = `
+      <p>Hola <strong>${session.nombre}</strong> (${session.dni})</p>
+      <p>Área: <strong>${(session.area && session.area.join ? session.area.join(', ') : session.area || '---')}</strong> | Turno: <strong>${session.turno || '---'}</strong></p>
+      <p>Desde aquí podés gestionar tus materias, cargar notas y programar exámenes.</p>
+    `;
+  </script>
 </body>
 </html>
