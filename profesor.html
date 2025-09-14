@@ -49,18 +49,18 @@
     const session = JSON.parse(sessionStorage.getItem('sessionUser') || 'null');
     if (!session || session.rol !== 'profesor') {
       window.location.href = 'index.html';
-      return;
+    } else {
+      document.getElementById('profeName').textContent = session.nombre;
+      document.getElementById('signOut').addEventListener('click', ()=>{
+        sessionStorage.removeItem('sessionUser');
+        window.location.href='index.html';
+      });
+      document.getElementById('bienvenidaProfe').innerHTML = `
+        <p>Hola <strong>${session.nombre}</strong> (${session.dni})</p>
+        <p>Área: <strong>${(session.area && session.area.join ? session.area.join(', ') : session.area || '---')}</strong> | Turno: <strong>${session.turno || '---'}</strong></p>
+        <p>Desde aquí podés gestionar tus materias, cargar notas y programar exámenes.</p>
+      `;
     }
-    document.getElementById('profeName').textContent = session.nombre;
-    document.getElementById('signOut').addEventListener('click', ()=>{
-      sessionStorage.removeItem('sessionUser');
-      window.location.href='index.html';
-    });
-    document.getElementById('bienvenidaProfe').innerHTML = `
-      <p>Hola <strong>${session.nombre}</strong> (${session.dni})</p>
-      <p>Área: <strong>${(session.area && session.area.join ? session.area.join(', ') : session.area || '---')}</strong> | Turno: <strong>${session.turno || '---'}</strong></p>
-      <p>Desde aquí podés gestionar tus materias, cargar notas y programar exámenes.</p>
-    `;
   </script>
 </body>
 </html>
