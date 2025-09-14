@@ -24,19 +24,36 @@ import { getAllMaterias, getMateria, getUsuarioByDni, getNota, setNota, createEx
     const resolved = await Promise.all(alumnos);
     // Obtener notas de todos los alumnos
     const notas = await Promise.all(resolved.map(u => getNota(u.dni, id)));
-    const tabla = `<table class="table"><thead><tr><th>Alumno</th><th>DNI</th><th>Notas (parc1, parc2, final)</th><th>Acción</th></tr></thead><tbody>
-      ${resolved.map((u, idx) => {
-        const n = notas[idx] || {};
-        return `<tr><td>${u.nombre}</td><td>${u.dni}</td>
-          <td>
-            <input type="number" min="0" max="10" id="p1_${u.dni}" value="${n.parcial1 ?? ''}" placeholder="P1" style="width:40px;">,
-            <input type="number" min="0" max="10" id="p2_${u.dni}" value="${n.parcial2 ?? ''}" placeholder="P2" style="width:40px;">,
-            <input type="number" min="0" max="10" id="fin_${u.dni}" value="${n.final ?? ''}" placeholder="Final" style="width:40px;">
-          </td>
-          <td><button class="btn" onclick="guardarNota('${u.dni}','${id}')">Guardar</button></td></tr>`;
-      }).join('')}
-    </tbody></table>`;
+    // Tabla tipo Excel
+    let tabla = `<table class="table excel-table"><thead><tr><th>Alumno</th><th>DNI</th><th>Parcial 1</th><th>Parcial 2</th><th>Final</th><th>Promedio</th><th>Acción</th></tr></thead><tbody>`;
+    tabla += resolved.map((u, idx) => {
+      const n = notas[idx] || {};
+      return `<tr>
+        <td>${u.nombre}</td>
+        <td>${u.dni}</td>
+        <td><input type="number" min="0" max="10" id="p1_${u.dni}" value="${n.parcial1 ?? ''}" style="width:50px;"></td>
+        <td><input type="number" min="0" max="10" id="p2_${u.dni}" value="${n.parcial2 ?? ''}" style="width:50px;"></td>
+        <td><input type="number" min="0" max="10" id="fin_${u.dni}" value="${n.final ?? ''}" style="width:50px;"></td>
+        <td id="prom_${u.dni}">${n.promedio ?? '-'}</td>
+        <td><button class="btn" onclick="guardarNota('${u.dni}','${id}')">Guardar</button></td>
+      </tr>`;
+    }).join('');
+    tabla += '</tbody></table>';
     document.getElementById('materiaDetalle').innerHTML = `<h3>${m.nombre}</h3>${tabla}`;
+    // Actualizar promedio al editar inputs
+    resolved.forEach(u => {
+      ['p1','p2','fin'].forEach(field => {
+        const input = document.getElementById(`${field}_${u.dni}`);
+        input.addEventListener('input', () => {
+          const p1 = Number(document.getElementById('p1_' + u.dni).value);
+          const p2 = Number(document.getElementById('p2_' + u.dni).value);
+          const fin = Number(document.getElementById('fin_' + u.dni).value);
+          const nums = [p1, p2, fin].filter(n => typeof n === 'number' && !isNaN(n));
+          const prom = nums.length ? (nums.reduce((a,b)=>a+b,0)/nums.length).toFixed(2) : '-';
+          document.getElementById('prom_' + u.dni).textContent = prom;
+        });
+      });
+    });
   };
 
   window.guardarNota = async (alumnoDni, materiaId) => {
