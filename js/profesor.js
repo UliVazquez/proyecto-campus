@@ -7,15 +7,18 @@ import { getAllMaterias, getMateria, getUsuarioByDni, getNota, setNota, createEx
   document.getElementById('signOut').addEventListener('click', ()=>{ sessionStorage.removeItem('sessionUser'); window.location.href='index.html'; });
 
   async function refresh(){
-    // get materias assigned to this professor (materias where profesorDni == session.dni)
-    const all = await getAllMaterias();
-    const mine = all.filter(m => m.profesorDni === session.dni);
-    const container = document.getElementById('profMaterias');
-    if (mine.length === 0) container.innerHTML = '<p class="muted">No tenés materias asignadas.</p>';
-    else container.innerHTML = mine.map(m => `<div class="small-card"><strong>${m.nombre}</strong> — ID: ${m.id} — ${m.horario || ''} <div class="action-row"><button class="btn" onclick="abrirMateria('${m.id}')">Ver</button></div></div>`).join('');
-    // populate exam materia select
-    const sel = document.getElementById('exam_materia');
-    sel.innerHTML = mine.map(m => `<option value="${m.id}">${m.nombre}</option>`).join('');
+  // get materias assigned to this professor (materias where profesorDni == session.dni)
+  const all = await getAllMaterias();
+  console.log('Materias obtenidas:', all);
+  console.log('DNI de sesión:', session.dni);
+  const mine = all.filter(m => m.profesorDni === session.dni);
+  console.log('Materias filtradas para este profesor:', mine);
+  const container = document.getElementById('profMaterias');
+  if (mine.length === 0) container.innerHTML = '<p class="muted">No tenés materias asignadas.</p>';
+  else container.innerHTML = mine.map(m => `<div class="small-card"><strong>${m.nombre}</strong> — ID: ${m.id} — ${m.horario || ''} <div class="action-row"><button class="btn" onclick="abrirMateria('${m.id}')">Ver</button></div></div>`).join('');
+  // populate exam materia select
+  const sel = document.getElementById('exam_materia');
+  sel.innerHTML = mine.map(m => `<option value="${m.id}">${m.nombre}</option>`).join('');
   }
 
   window.abrirMateria = async (id) => {
