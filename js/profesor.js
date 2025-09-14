@@ -22,26 +22,32 @@ import { getAllMaterias, getMateria, getUsuarioByDni, getNota, setNota, createEx
     const m = await getMateria(id);
     const alumnos = (m.alumnosInscritos || []).map(dni => getUsuarioByDni(dni));
     const resolved = await Promise.all(alumnos);
-    // Obtener notas de todos los alumnos
-    const notas = await Promise.all(resolved.map(u => getNota(u.dni, id)));
+    // Filtrar alumnos no encontrados
+    const alumnosValidos = resolved.filter(u => u && u.dni);
+    // Obtener notas de todos los alumnos válidos
+    const notas = await Promise.all(alumnosValidos.map(u => getNota(u.dni, id)));
     // Tabla tipo Excel
     let tabla = `<table class="table excel-table"><thead><tr><th>Alumno</th><th>DNI</th><th>Parcial 1</th><th>Parcial 2</th><th>Final</th><th>Promedio</th><th>Acción</th></tr></thead><tbody>`;
-    tabla += resolved.map((u, idx) => {
-      const n = notas[idx] || {};
-      return `<tr>
-        <td>${u.nombre}</td>
-        <td>${u.dni}</td>
-        <td><input type="number" min="0" max="10" id="p1_${u.dni}" value="${n.parcial1 ?? ''}" style="width:50px;"></td>
-        <td><input type="number" min="0" max="10" id="p2_${u.dni}" value="${n.parcial2 ?? ''}" style="width:50px;"></td>
-        <td><input type="number" min="0" max="10" id="fin_${u.dni}" value="${n.final ?? ''}" style="width:50px;"></td>
-        <td id="prom_${u.dni}">${n.promedio ?? '-'}</td>
-        <td><button class="btn" onclick="guardarNota('${u.dni}','${id}')">Guardar</button></td>
-      </tr>`;
-    }).join('');
+    if (alumnosValidos.length === 0) {
+      tabla += `<tr><td colspan="7" class="muted">No hay alumnos inscriptos o los datos están incompletos.</td></tr>`;
+    } else {
+      tabla += alumnosValidos.map((u, idx) => {
+        const n = notas[idx] || {};
+        return `<tr>
+          <td>${u.nombre}</td>
+          <td>${u.dni}</td>
+          <td><input type="number" min="0" max="10" step="0.01" id="p1_${u.dni}" value="${n.parcial1 ?? ''}" style="width:60px;" inputmode="decimal"></td>
+          <td><input type="number" min="0" max="10" step="0.01" id="p2_${u.dni}" value="${n.parcial2 ?? ''}" style="width:60px;" inputmode="decimal"></td>
+          <td><input type="number" min="0" max="10" step="0.01" id="fin_${u.dni}" value="${n.final ?? ''}" style="width:60px;" inputmode="decimal"></td>
+          <td id="prom_${u.dni}">${typeof n.promedio === 'number' ? n.promedio.toFixed(2) : (n.promedio ?? '-')}</td>
+          <td><button class="btn" onclick="guardarNota('${u.dni}','${id}')">Guardar</button></td>
+        </tr>`;
+      }).join('');
+    }
     tabla += '</tbody></table>';
     document.getElementById('materiaDetalle').innerHTML = `<h3>${m.nombre}</h3>${tabla}`;
     // Actualizar promedio al editar inputs
-    resolved.forEach(u => {
+    alumnosValidos.forEach(u => {
       ['p1','p2','fin'].forEach(field => {
         const input = document.getElementById(`${field}_${u.dni}`);
         input.addEventListener('input', () => {
