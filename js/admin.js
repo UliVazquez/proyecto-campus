@@ -11,22 +11,32 @@ import { getAllUsuarios, getUsuarioByDni, createUsuario, deleteUsuario, getAllMa
     const usuarios = await getAllUsuarios();
     const materias = await getAllMaterias();
     const examenes = await getAllExamenes();
-    // users
+    // Separar usuarios por rol
+    const alumnos = usuarios.filter(u => u.rol === 'alumno');
+    const profesores = usuarios.filter(u => u.rol === 'profesor');
+    const admins = usuarios.filter(u => u.rol === 'admin');
+
+    // Mostrar usuarios (alumnos, profesores, admins)
     const ul = document.getElementById('usersList');
-    ul.innerHTML = usuarios.map(u => {
-      return `<div class="small-card"><strong>${u.nombre || '(sin nombre)'}</strong> — ${u.rol} — DNI: ${u.dni} ${u.curso?(' — '+u.curso):''}
-        <div class="action-row" style="margin-top:8px">
-          <button class="btn ghost" onclick="viewUser('${u.dni}')">Ver</button>
-          <button class="btn" onclick="deleteUser('${u.dni}')">Borrar</button>
-        </div>
-      </div>`;
-    }).join('');
-    // materias
+    ul.innerHTML = `
+      <h3>Alumnos</h3>
+      ${alumnos.length ? alumnos.map(u => `<div class="small-card"><strong>${u.nombre}</strong> — DNI: ${u.dni} — Curso: ${u.curso || '---'}<div class="action-row"><button class="btn ghost" onclick="viewUser('${u.dni}')">Ver</button><button class="btn" onclick="deleteUser('${u.dni}')">Borrar</button></div></div>`).join('') : '<p class="muted small">No hay alumnos.</p>'}
+      <h3>Profesores</h3>
+      ${profesores.length ? profesores.map(u => `<div class="small-card"><strong>${u.nombre}</strong> — DNI: ${u.dni} — Área: ${(u.area && u.area.join ? u.area.join(', ') : (u.area || '---'))}<div class="action-row"><button class="btn ghost" onclick="viewUser('${u.dni}')">Ver</button><button class="btn" onclick="deleteUser('${u.dni}')">Borrar</button></div></div>`).join('') : '<p class="muted small">No hay profesores.</p>'}
+      <h3>Administradores</h3>
+      ${admins.length ? admins.map(u => `<div class="small-card"><strong>${u.nombre}</strong> — DNI: ${u.dni}<div class="action-row"><button class="btn ghost" onclick="viewUser('${u.dni}')">Ver</button><button class="btn" onclick="deleteUser('${u.dni}')">Borrar</button></div></div>`).join('') : '<p class="muted small">No hay administradores.</p>'}
+    `;
+
+    // Mostrar materias con nombre de profesor
+    const profesoresMap = {};
+    profesores.forEach(p => { if (p.dni) profesoresMap[p.dni] = p.nombre; });
     const ml = document.getElementById('materiasList');
-    ml.innerHTML = materias.map(m => `<div class="small-card"><strong>${m.nombre}</strong> — Prof DNI: ${m.profesorDni || '---'} — ${m.horario || ''} <div class="muted small">Inscritos: ${(m.alumnosInscritos||[]).length}</div></div>`).join('');
-    // examenes
+    ml.innerHTML = materias.length ? materias.map(m => `<div class="small-card"><strong>${m.nombre}</strong> — Profesor: ${profesoresMap[m.profesorDni] || m.profesorDni || '---'} — ${m.horario || ''} <div class="muted small">Inscriptos: ${(m.alumnosInscritos||[]).length}</div></div>`).join('') : '<p class="muted small">No hay materias.</p>';
+
+    // Mostrar exámenes
     const el = document.getElementById('examenesList');
-    el.innerHTML = examenes.map(e => `<div class="small-card"><strong>${e.materiaId}</strong> — Fecha: ${e.fecha} — Turno: ${e.turno} — Inscriptos: ${(e.alumnosInscriptos||[]).length}</div>`).join('');
+    el.innerHTML = examenes.length ? examenes.map(e => `<div class="small-card"><strong>${e.materiaId}</strong> — Fecha: ${e.fecha} — Turno: ${e.turno} — Inscriptos: ${(e.alumnosInscriptos||[]).length}</div>`).join('') : '<p class="muted small">No hay exámenes.</p>';
+
     // populate select for creating exam (materias)
     const eSel = document.getElementById('e_materia');
     eSel.innerHTML = materias.map(m => `<option value="${m.id || m.nombre}">${m.id || m.nombre} — ${m.nombre}</option>`).join('');
