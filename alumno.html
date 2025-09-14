@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>Campus Virtual - Alumno</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <h1>Panel Alumno</h1>
+    <div>
+      <span id="alumnoName" class="muted"></span>
+      <button id="signOut" class="btn ghost">Cerrar sesión</button>
+    </div>
+  </header>
+  <main class="container">
+    <section class="card">
+      <h2>Perfil</h2>
+      <div id="profile"></div>
+    </section>
+
+    <section class="card">
+      <h2>Mis materias</h2>
+      <div id="misMaterias"></div>
+    </section>
+
+    <section class="card">
+      <h2>Inscripciones a exámenes</h2>
+      <div id="misExamenes"></div>
+    </section>
+
+    <section class="card">
+      <h2>Notas</h2>
+      <div id="misNotas"></div>
+    </section>
+  </main>
+
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+  <script src="js/firebase-config.js"></script>
+  <script src="js/db.js"></script>
+  <script src="js/alumno.js"></script>
+</body>
+</html>

@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>Campus Virtual - Administrador</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <h1>Panel Administrador</h1>
+    <div>
+      <button id="signOut" class="btn ghost">Cerrar sesión</button>
+    </div>
+  </header>
+  <main class="container">
+    <section class="card">
+      <h2>Usuarios</h2>
+      <form id="createUserForm">
+        <div class="row">
+          <input id="u_dni" placeholder="DNI (sin espacios)" required />
+          <input id="u_nombre" placeholder="Nombre completo" required />
+        </div>
+        <div class="row">
+          <select id="u_rol">
+            <option value="alumno">Alumno</option>
+            <option value="profesor">Profesor</option>
+            <option value="admin">Administrador</option>
+          </select>
+          <input id="u_curso" placeholder="Curso (ej: 4to A)" />
+        </div>
+        <div class="row">
+          <select id="u_turno">
+            <option value="">-- Turno --</option>
+            <option value="Mañana">Mañana</option>
+            <option value="Tarde">Tarde</option>
+          </select>
+          <button class="btn primary" type="submit">Crear usuario</button>
+        </div>
+        <p class="muted small">La contraseña por defecto será: 8 + DNI</p>
+      </form>
+
+      <h3>Lista de usuarios</h3>
+      <div id="usersList"></div>
+      <!-- Modal de perfil de usuario -->
+      <div id="userProfileModal" class="modal" style="display:none;">
+        <div class="modal-content card" style="max-width:400px;margin:auto;">
+          <span id="closeProfileModal" style="float:right;cursor:pointer;font-size:1.5em">&times;</span>
+          <h3>Perfil de usuario</h3>
+          <form id="userProfileForm">
+            <input id="profile_dni" placeholder="DNI" readonly style="margin-bottom:8px" />
+            <input id="profile_nombre" placeholder="Nombre completo" required style="margin-bottom:8px" />
+            <input id="profile_rol" placeholder="Rol" readonly style="margin-bottom:8px" />
+            <input id="profile_curso" placeholder="Curso" style="margin-bottom:8px" />
+            <input id="profile_turno" placeholder="Turno" style="margin-bottom:8px" />
+            <input id="profile_area" placeholder="Área (coma separada)" style="margin-bottom:8px" />
+            <button class="btn primary" type="submit">Guardar cambios</button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Materias</h2>
+      <form id="createMateriaForm">
+        <input id="m_nombre" placeholder="Nombre de la materia" required />
+        <input id="m_profesor" placeholder="DNI del profesor" />
+        <input id="m_horario" placeholder="Horario (ej: Lun 10-12)" />
+        <select id="m_turno">
+          <option value="">-- Turno --</option>
+          <option value="Mañana">Mañana</option>
+          <option value="Tarde">Tarde</option>
+        </select>
+        <div class="row">
+          <button class="btn primary" type="submit">Crear materia</button>
+        </div>
+      </form>
+      <h3>Lista de materias</h3>
+      <div id="materiasList"></div>
+    </section>
+
+    <section class="card">
+      <h2>Exámenes</h2>
+      <form id="createExamenForm">
+        <select id="e_materia"></select>
+        <input id="e_fecha" type="date" />
+        <select id="e_turno">
+          <option value="Mañana">Mañana</option>
+          <option value="Tarde">Tarde</option>
+        </select>
+        <button class="btn primary" type="submit">Crear examen</button>
+      </form>
+      <h3>Exámenes programados</h3>
+      <div id="examenesList"></div>
+    </section>
+  </main>
+
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+  <script type="module" src="js/firebase-config.js"></script>
+  <script type="module" src="js/db.js"></script>
+  <script type="module" src="js/admin.js"></script>
+</body>
+</html>

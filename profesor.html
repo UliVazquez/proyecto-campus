@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>Campus Virtual - Profesor</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <h1>Panel Profesor</h1>
+    <div>
+      <span id="profeName" class="muted"></span>
+      <button id="signOut" class="btn ghost">Cerrar sesión</button>
+    </div>
+  </header>
+  <main class="container">
+    <section class="card">
+      <h2>Mis materias</h2>
+      <div id="profMaterias"></div>
+    </section>
+
+    <section class="card">
+      <h2>Gestión de estudiantes y notas</h2>
+      <div id="materiaDetalle"></div>
+    </section>
+
+    <section class="card">
+      <h2>Programar examen (para mi materia)</h2>
+      <form id="crearExamenProfe">
+        <select id="exam_materia"></select>
+        <input id="exam_fecha" type="date" />
+        <select id="exam_turno">
+          <option value="Mañana">Mañana</option>
+          <option value="Tarde">Tarde</option>
+        </select>
+        <button class="btn primary" type="submit">Programar examen</button>
+      </form>
+    </section>
+  </main>
+
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+  <script src="js/firebase-config.js"></script>
+  <script src="js/db.js"></script>
+  <script src="js/profesor.js"></script>
+</body>
+</html>
